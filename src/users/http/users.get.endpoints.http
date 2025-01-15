@@ -1,0 +1,6 @@
+GET http://localhost:3300/users
+
+GET http://localhost:3300/users/1234
+GET http://localhost:3300/users/1234/optional
+GET http://localhost:3300/users/1234/optional?limit=10&offset=5
+GET http://localhost:3300/users/1234?limit=10&offset=5

@@ -1,0 +1,6 @@
+## for headers
+# Content-type: application/json
+# Body
+# {}
+
+GET http://localhost:3300

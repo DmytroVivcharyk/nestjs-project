@@ -1,0 +1,26 @@
+POST http://localhost:3300/users
+Content-Type: application/json
+{
+    "firstName": "Jon",
+    "lastName": "Doe",
+    "email": "jon@email.com",
+    "password": "jon1234"
+}
+
+POST http://localhost:3300/users/1234
+Content-Type: application/json
+{
+    "firstName": "Jon",
+    "lastName": "Doe",
+    "email": "jon@email.com",
+    "password": "Jon$1234"
+}
+
+POST http://localhost:3300/users/express
+Content-Type: application/json
+{
+    "firstName": "Jon",
+    "lastName": "Doe",
+    "email": "jon@email.com",
+    "password": "jon1234"
+}
