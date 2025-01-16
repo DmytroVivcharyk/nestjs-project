@@ -15,10 +15,22 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 
+import { UsersService } from './providers/users.service';
 import { CreateUserDto, UpdateUserDto } from './dtos/create-user.dto';
 
 @Controller('users')
 export class UsersController {
+  private readonly UsersService: UsersService;
+
+  constructor(usersService: UsersService) {
+    this.UsersService = usersService;
+  }
+
+  @Get('injectable')
+  getIngectableService() {
+    return this.UsersService.getHello();
+  }
+
   @Get()
   public getUsers() {
     return 'Get Request for users';
@@ -26,12 +38,12 @@ export class UsersController {
 
   @Get(':id/:optionalParam?')
   public getUsersWithParamsAndQuery(
-    @Query('limit', ParseIntPipe, new DefaultValuePipe(0)) limit: number,
-    @Query('offset', ParseIntPipe, new DefaultValuePipe(0)) offset: number,
+    @Query('limit', new DefaultValuePipe(0), ParseIntPipe) limit: number,
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
     @Param('id', ParseIntPipe) id: number,
     @Param() restParams: any,
   ) {
-    return `Get Request for users with params: \n id: ${id + 100000000} \n ${JSON.stringify(restParams)} \n and query: \n limit: ${limit} \n offset: ${offset}`;
+    return `Get Request for users with params: \n id: ${id} \n ${JSON.stringify(restParams)} \n and query: \n limit: ${limit} \n offset: ${offset}`;
   }
 
   @Post()
