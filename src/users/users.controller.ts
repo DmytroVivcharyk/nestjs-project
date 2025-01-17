@@ -14,11 +14,19 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Request } from 'express';
+import {
+  ApiTags,
+  ApiParam,
+  ApiQuery,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 import { UsersService } from './providers/users.service';
 import { CreateUserDto, UpdateUserDto } from './dtos/create-user.dto';
 
 @Controller('users')
+@ApiTags('Users')
 export class UsersController {
   private readonly UsersService: UsersService;
 
@@ -37,6 +45,36 @@ export class UsersController {
   }
 
   @Get(':id/:optionalParam?')
+  @ApiOperation({ summary: 'Get user by id with optional parameter' })
+  @ApiResponse({ status: 200, description: 'returns a user' })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    description: 'User ID',
+    example: 4354,
+  })
+  @ApiParam({
+    name: 'optionalParam',
+    type: String,
+    required: false,
+    description: 'Optional Additional parameter',
+    example: 'hasCar',
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    required: false,
+    description: 'Limit',
+    example: 10,
+  })
+  @ApiQuery({
+    name: 'offset',
+    type: Number,
+    required: false,
+    description: 'Offset',
+    example: 0,
+  })
   public getUsersWithParamsAndQuery(
     @Query('limit', new DefaultValuePipe(0), ParseIntPipe) limit: number,
     @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
