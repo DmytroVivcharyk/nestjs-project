@@ -103,7 +103,7 @@ export class UsersController {
     newUser: CreateUserDto,
   ) {
     newUser.sayHello();
-    return `Post Request for users with body: \n ${JSON.stringify(newUser)}`;
+    return this.UsersService.createUser(newUser);
   }
 
   @Patch(':id')
