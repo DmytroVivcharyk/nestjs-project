@@ -1,23 +1,18 @@
+
 POST http://localhost:3300/posts
 Content-Type: application/json
 {
+  "authorId": 2,
   "title": "Sample Blog Post",
   "postType": "post",
   "status": "draft",
-  "slug": "sample-blog-post",
+  "slug": "sample-blog-post-12",
   "content": "This is a sample content for the blog post.",
   "schema": "{\"type\": \"object\", \"properties\": {\"key\": \"value\"}}",
   "feturedImageUrl": "https://example.com/sample-image.jpg",
   "publishedAt": "2025-01-16T12:00:00Z",
-  "tags": ["sample", "blog", "post"],
-  "metaData": [
-    {
-      "key": "author",
-      "value": "John Doe"
-    },
-    {
-      "key": "readTime",
-      "value": 5
+  "tags": [1, 3],
+  "metaOptions": {
+    "metaValue": "{\"sidebarEnabled\": true, \"footerActive\": true}"
     }
-  ]
 }

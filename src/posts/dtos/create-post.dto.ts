@@ -11,11 +11,12 @@ import {
   IsUrl,
   IsISO8601,
   ValidateNested,
+  IsInt,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-import { PostMetadataOptionDto } from './create-post-metadata-option.dto';
+import { CreatePostMetadataOptionDto } from '../../meta-options/dtos/create-post-metadata-option.dto';
 import { PostTypeEnum } from '../enums/post-type.enum';
 import { PostStatusEnum } from '../enums/post-status.enum';
 
@@ -101,36 +102,43 @@ export class CreatePostDto {
   publishedAt?: Date;
 
   @ApiPropertyOptional({
-    description: 'The tags of the post',
+    description: 'Array of ids  of tags',
     type: [String],
-    example: ['tag1', 'tag2'],
+    example: [34, 27346],
   })
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  @MinLength(3, { each: true })
-  tags?: string[];
+  @IsInt({ each: true })
+  tags?: number[];
 
   @ApiPropertyOptional({
     description: 'The metadata of the post',
-    type: 'array',
+    type: 'object',
     required: false,
     items: {
       type: 'object',
       properties: {
-        key: {
-          type: 'string',
-          example: 'key1',
-        },
-        value: {
-          type: 'string',
-          example: 'value1',
+        meta: {
+          type: 'json',
+          example: '{"key": "value"}',
+          description: 'The meta value is a JSON string',
         },
       },
     },
   })
-  @IsArray()
+  @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => PostMetadataOptionDto)
-  metaData?: PostMetadataOptionDto[];
+  @Type(() => CreatePostMetadataOptionDto)
+  metaOptions?: CreatePostMetadataOptionDto | null;
+
+  @ApiProperty({
+    description: 'The user id of the post',
+    type: Number,
+    required: true,
+    example: 1,
+  })
+  @IsDefined()
+  @IsNotEmpty()
+  @IsInt()
+  authorId: number;
 }

@@ -6,8 +6,17 @@ import {
   Body,
   ValidationPipe,
   Patch,
+  Delete,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 
 import { PostsService } from './providers/posts.service';
 import { CreatePostDto } from './dtos/create-post.dto';
@@ -19,8 +28,8 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get(':userId')
-  getPostsByUserId(@Param('userId') userId: string) {
-    return this.postsService.getPostsByUserId(userId);
+  getPostsByUserId(@Param('userId', ParseIntPipe) userId: number) {
+    return this.postsService.getAllPosts(userId);
   }
 
   @Post()
@@ -31,12 +40,12 @@ export class PostsController {
   })
   public createPost(
     @Body(new ValidationPipe({ whitelist: false, transform: true }))
-    newPost: CreatePostDto,
+    createPostDto: CreatePostDto,
   ) {
-    return `Post Request for posts with body: \n ${JSON.stringify(newPost)}`;
+    return this.postsService.createPost(createPostDto);
   }
 
-  @Patch(':postId')
+  @Patch()
   @ApiOperation({ summary: 'Update a post by id' })
   @ApiResponse({
     status: 200,
@@ -52,9 +61,27 @@ export class PostsController {
   public updatePost(
     @Body(new ValidationPipe({ whitelist: false, transform: true }))
     patchPostDto: PatchPostDto,
-    @Param('postId')
-    postId: string,
+    // @Param('postId')
+    // postId: string,
   ) {
-    return `Patch Request for posts with id: \n ${postId} \n and body: \n ${JSON.stringify(patchPostDto)}`;
+    return this.postsService.updatePostById(patchPostDto);
+  }
+
+  @ApiOperation({ summary: 'Delete a post by id' })
+  @ApiQuery({
+    name: 'id',
+    type: Number,
+    required: true,
+    example: '234',
+    description: 'The id of the post to delete',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The post has been successfully deleted.',
+  })
+  @Delete()
+  public deletePostById(@Query('id', ParseIntPipe) id: number) {
+    console.log('id', id);
+    return this.postsService.deletePostById(id);
   }
 }

@@ -40,14 +40,9 @@ export class UsersService {
   /**
    * The method that returns a user by id
    * @param userId string
-   * @returns user { userId: string; firstName: string; lastName: string }
    */
-  public getUserById(userId: string) {
-    return {
-      userId,
-      firstName: 'John',
-      lastName: 'Doe',
-    };
+  public async getUserById(userId: number) {
+    return await this.userRepository.findOneBy({ id: userId });
   }
 
   /**

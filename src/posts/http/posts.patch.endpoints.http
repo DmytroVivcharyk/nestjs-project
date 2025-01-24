@@ -1,6 +1,9 @@
-PATCH http://localhost:3300/posts/234
+
+PATCH http://localhost:3300/posts
 Content-Type: application/json
 {
+    "id":10,
     "status": "draft",
-    "postType": "series"
+    "postType": "series",
+    "tags": [4, 7]
 }
