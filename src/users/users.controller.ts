@@ -14,6 +14,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { ConfigService } from '@nestjs/config';
 import {
   ApiTags,
   ApiParam,
@@ -30,7 +31,13 @@ import { CreateUserDto, UpdateUserDto } from './dtos/create-user.dto';
 export class UsersController {
   private readonly UsersService: UsersService;
 
-  constructor(usersService: UsersService) {
+  constructor(
+    /**
+     *  Inject ConfigService
+     */
+    readonly configService: ConfigService,
+    usersService: UsersService,
+  ) {
     this.UsersService = usersService;
   }
 
@@ -41,6 +48,7 @@ export class UsersController {
 
   @Get()
   public getUsers() {
+    console.log(this.configService.get('S3_BUCKET'));
     return 'Get Request for users';
   }
 
