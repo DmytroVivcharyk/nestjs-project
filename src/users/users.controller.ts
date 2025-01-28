@@ -25,6 +25,7 @@ import {
 
 import { UsersService } from './providers/users.service';
 import { CreateUserDto, UpdateUserDto } from './dtos/create-user.dto';
+import { CreateManyUsersDto } from './dtos/create-many-users.dto';
 
 @Controller('users')
 @ApiTags('Users')
@@ -103,6 +104,14 @@ export class UsersController {
   public addUserWithExpress(@Req() req: Request) {
     const body = req.body;
     return `Post Request for users Express: \n ${JSON.stringify(body)}`;
+  }
+
+  @Post('create-many')
+  public createMany(
+    @Body(new ValidationPipe({ whitelist: true, transform: true }))
+    createManyUsersDto: CreateManyUsersDto,
+  ) {
+    return this.UsersService.createManyUsers(createManyUsersDto);
   }
 
   @Post(':id')

@@ -10,6 +10,8 @@ import { Repository } from 'typeorm';
 import { AuthService } from 'src/auth/providers/auth.service';
 import { User } from '../user.entity';
 import { CreateUserDto } from '../dtos/create-user.dto';
+import { UsersCreateManyProvider } from './users-create-many.provider';
+import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
 /**
  * UsersService to connect to Users table and perform buisned logic
  * Inject AuthService to be able to use Authservice
@@ -30,6 +32,11 @@ export class UsersService {
      */
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    /**
+     * Inject UsersCreateManyProvider
+     */
+    private readonly usersCreateManyProvider: UsersCreateManyProvider,
   ) {}
 
   /**
@@ -95,5 +102,9 @@ export class UsersService {
       });
     }
     return newUser;
+  }
+
+  public async createManyUsers(createManyUsersDto: CreateManyUsersDto) {
+    return await this.usersCreateManyProvider.createMany(createManyUsersDto);
   }
 }
