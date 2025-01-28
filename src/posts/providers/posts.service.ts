@@ -1,4 +1,10 @@
-import { Injectable, Body, ValidationPipe } from '@nestjs/common';
+import {
+  Injectable,
+  Body,
+  ValidationPipe,
+  RequestTimeoutException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from '../../users/providers/users.service';
@@ -87,11 +93,36 @@ export class PostsService {
    * @param patchPostDto PatchPostDto
    */
   public async updatePostById(patchPostDto: PatchPostDto) {
-    const tags = await this.tagsService.getTagsByPostId(patchPostDto.tags);
+    let tags = undefined;
+    let post = undefined;
 
-    const post = await this.postRepository.findOneBy({
-      id: patchPostDto.id,
-    });
+    try {
+      tags = await this.tagsService.getTagsByPostId(patchPostDto.tags);
+    } catch (error) {
+      throw new BadRequestException('Failed to fetch tags for updating post', {
+        cause: error,
+      });
+    }
+
+    if (!tags || tags.length !== patchPostDto.tags.length) {
+      throw new BadRequestException(
+        'Check your tags ids for updating post and ensure that they are correct',
+      );
+    }
+
+    try {
+      post = await this.postRepository.findOneBy({
+        id: patchPostDto.id,
+      });
+    } catch (error) {
+      throw new RequestTimeoutException('Error while fetching post', {
+        cause: error,
+      });
+    }
+
+    if (!post) {
+      throw new BadRequestException('Post whit this id not found');
+    }
 
     post.title = patchPostDto.title ?? post.title;
     post.postType = patchPostDto.postType ?? post.postType;
@@ -102,7 +133,15 @@ export class PostsService {
     post.feturedImageUrl = patchPostDto.feturedImageUrl ?? post.feturedImageUrl;
     post.tags = tags;
 
-    return await this.postRepository.save(post);
+    try {
+      await this.postRepository.save(post);
+    } catch (error) {
+      throw new RequestTimeoutException('Error while updating post', {
+        cause: error,
+      });
+    }
+
+    return post;
   }
 
   /**

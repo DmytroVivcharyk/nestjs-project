@@ -1,5 +1,9 @@
 import { In } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  RequestTimeoutException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTagDto } from '../dtos/create-tag.dto';
@@ -21,9 +25,21 @@ export class TagsService {
   }
 
   public async getTagsByPostId(tags: number[]): Promise<Tag[]> {
-    return await this.tagRepository.find({
-      where: { id: In(tags) },
-    });
+    let foundTags = undefined;
+    try {
+      foundTags = await this.tagRepository.find({
+        where: { id: In(tags) },
+      });
+    } catch (error) {
+      throw new RequestTimeoutException('Error while fetching tags', {
+        cause: error,
+      });
+    }
+    if (!foundTags) {
+      throw new BadRequestException('Tags whit these ids not found');
+    }
+
+    return foundTags;
   }
 
   public async deleteTagById(id: number) {

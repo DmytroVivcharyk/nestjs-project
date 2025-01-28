@@ -1,4 +1,10 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  forwardRef,
+  RequestTimeoutException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthService } from 'src/auth/providers/auth.service';
@@ -42,7 +48,18 @@ export class UsersService {
    * @param userId string
    */
   public async getUserById(userId: number) {
-    return await this.userRepository.findOneBy({ id: userId });
+    try {
+      const user = await this.userRepository.findOneBy({ id: userId });
+      if (!user) {
+        throw new BadRequestException('The User id does not exist');
+      }
+      return user;
+    } catch (error) {
+      throw new RequestTimeoutException('Unable to connect to database', {
+        description: 'Error connecting to database, please try again later',
+        cause: error,
+      });
+    }
   }
 
   /**
@@ -51,15 +68,32 @@ export class UsersService {
    * @param User
    */
   public async createUser(newUserData: CreateUserDto) {
-    const existingUser = await this.userRepository.findOne({
-      where: { email: newUserData.email },
-    });
+    let existingUser = undefined;
+
+    try {
+      existingUser = await this.userRepository.findOne({
+        where: { email: newUserData.email },
+      });
+    } catch (error) {
+      throw new RequestTimeoutException('Unable to connect to database', {
+        description: 'Error connecting to database, please try again later',
+        cause: error,
+      });
+    }
+
     if (existingUser) {
-      return 'User already exists';
+      throw new BadRequestException('User already exists');
     }
 
     let newUser = this.userRepository.create(newUserData);
-    newUser = await this.userRepository.save(newUser);
+    try {
+      newUser = await this.userRepository.save(newUser);
+    } catch (error) {
+      throw new RequestTimeoutException('Unable to connect to database', {
+        description: 'Error connecting to database, please try again later',
+        cause: error,
+      });
+    }
     return newUser;
   }
 }
