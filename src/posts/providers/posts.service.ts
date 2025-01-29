@@ -13,6 +13,9 @@ import { CreatePostDto } from '../dtos/create-post.dto';
 import { PatchPostDto } from 'src/posts/dtos/patch-post.dto';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { TagsService } from 'src/tags/providers/tags.service';
+import { GetPostsDto } from 'src/posts/dtos/get-posts-dto';
+import { PaginationProvider } from 'src/common/pagination/providers/pagination.provider';
+import { Paginated } from 'src/common/pagination/interfaces/paginated.interface';
 
 @Injectable()
 export class PostsService {
@@ -38,21 +41,31 @@ export class PostsService {
      */
     @InjectRepository(MetaOption)
     private readonly metaOptionsRepository: Repository<MetaOption>,
+
+    /**
+     * Inject PaginationProvider
+     */
+    private readonly paginationProvider: PaginationProvider,
   ) {}
 
   /**
    * The method that returns a user by id
    * @param userId string
    */
-  public async getAllPosts(userId: number) {
+  public async getAllPosts(
+    userId: number,
+    postQuery: GetPostsDto,
+  ): Promise<Paginated<Post> | string> {
     const user = this.usersService.getUserById(userId);
     if (!user) return 'User not found';
-    return await this.postRepository.find({
-      relations: {
-        metaOptions: true,
-        tags: true,
+    return this.paginationProvider.paginateQuery(
+      {
+        limit: postQuery.limit,
+        page: postQuery.page,
       },
-    });
+      this.postRepository,
+      ['author', 'tags'],
+    );
   }
 
   /**
