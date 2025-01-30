@@ -116,7 +116,13 @@ export class UsersController {
 
   @Post(':id')
   public addUserWithBody(
-    @Body(new ValidationPipe({ whitelist: true, transform: true }))
+    @Body(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
     newUser: CreateUserDto,
   ) {
     newUser.sayHello();

@@ -12,6 +12,7 @@ import { User } from '../user.entity';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
+import { HashingProvider } from 'src/auth/providers/hashing.provider';
 /**
  * UsersService to connect to Users table and perform buisned logic
  * Inject AuthService to be able to use Authservice
@@ -32,6 +33,12 @@ export class UsersService {
      */
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    /**
+     * Inject BcryptProvider
+     */
+    @Inject(forwardRef(() => HashingProvider))
+    private readonly hashingProvider: HashingProvider,
 
     /**
      * Inject UsersCreateManyProvider
@@ -69,6 +76,21 @@ export class UsersService {
     }
   }
 
+  public async findUserByEmail(email: string) {
+    try {
+      const user = await this.userRepository.findOneBy({ email });
+      if (!user) {
+        throw new BadRequestException('The User id does not exist');
+      }
+      return user;
+    } catch (error) {
+      throw new RequestTimeoutException('Unable to connect to database', {
+        description: 'Error connecting to database, please try again later',
+        cause: error,
+      });
+    }
+  }
+
   /**
    * The method that creates a user
    * @param newUser: CreateUserDto
@@ -93,6 +115,12 @@ export class UsersService {
     }
 
     let newUser = this.userRepository.create(newUserData);
+
+    const hashedPassword = await this.hashingProvider.hashPassword(
+      newUserData.password,
+    );
+    newUser.password = hashedPassword;
+
     try {
       newUser = await this.userRepository.save(newUser);
     } catch (error) {

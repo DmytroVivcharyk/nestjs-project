@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 // import { Post } from './posts/post.entity';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
+import jwtConfig from 'src/config/jwt.config';
 
 const ENV = process.env.NODE_ENV;
 
@@ -39,7 +40,7 @@ const ConfiguredTypeOrmModule = TypeOrmModule.forRootAsync({
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
-      load: [],
+      load: [jwtConfig],
       validationSchema: null,
     }),
     MetaOptionsModule,
