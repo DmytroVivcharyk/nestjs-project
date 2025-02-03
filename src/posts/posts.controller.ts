@@ -9,6 +9,7 @@ import {
   Delete,
   Query,
   ParseIntPipe,
+  // UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -22,6 +23,7 @@ import { PostsService } from './providers/posts.service';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { PatchPostDto } from './dtos/patch-post.dto';
 import { GetPostsDto } from './dtos/get-posts-dto';
+// import { AccessTokenGuard } from 'src/auth/guards/access-token.guard';
 
 @Controller('posts')
 @ApiTags('Posts')
@@ -29,11 +31,12 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get(':userId')
+  // @UseGuards(AccessTokenGuard)
+  @ApiOperation({ summary: 'Get all posts by user id' })
   getPostsByUserId(
     @Param('userId', ParseIntPipe) userId: number,
     @Query() postQuery: GetPostsDto,
   ) {
-    console.log('postQuery', postQuery);
     return this.postsService.getAllPosts(userId, postQuery);
   }
 

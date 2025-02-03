@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
@@ -9,6 +10,8 @@ import { AuthModule } from './auth/auth.module';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptionsModule } from './meta-options/meta-options.module';
 import jwtConfig from 'src/config/jwt.config';
+import { AuthentificationGuard } from './auth/guards/authentification.guard';
+import { AccessTokenGuard } from 'src/auth/guards/access-token.guard';
 
 const ENV = process.env.NODE_ENV;
 
@@ -44,6 +47,13 @@ const ConfiguredTypeOrmModule = TypeOrmModule.forRootAsync({
       validationSchema: null,
     }),
     MetaOptionsModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthentificationGuard,
+    },
+    AccessTokenGuard,
   ],
 })
 export class AppModule {}

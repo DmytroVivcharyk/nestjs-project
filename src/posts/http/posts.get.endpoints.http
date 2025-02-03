@@ -4,6 +4,7 @@
     exports.endDate = date.toString()
 }}
 GET http://localhost:3300/posts/5
+Authorization:Bearrer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjI2LCJlbWFpbCI6ImpvbjNAZW1haWwuY29tIiwiaWF0IjoxNzM4NTczODU0LCJleHAiOjE3Mzg1Nzc0NTQsImF1ZCI6ImxvY2FsaG9zdDozMzAwIiwiaXNzIjoibG9jYWxob3N0OjMzMDAifQ.QGjkGCTi7B66D9mv7TqYovLt2acXLjkii6-GlCtvjao
 ?startDate={{startDate}}
 &endDate={{endDate}}
 &page=2
