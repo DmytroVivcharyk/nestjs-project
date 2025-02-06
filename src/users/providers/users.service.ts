@@ -143,6 +143,8 @@ export class UsersService {
     return newUser;
   }
 
+  // public async createGoogleUser(googleUserData: CreateUserDto) {}
+
   public async createManyUsers(createManyUsersDto: CreateManyUsersDto) {
     return await this.usersCreateManyProvider.createMany(createManyUsersDto);
   }

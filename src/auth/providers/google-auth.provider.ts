@@ -39,19 +39,45 @@ export class GoogleAuthService implements OnModuleInit {
 
   public async googleAuthenticate(googleTokenDto: GoogleAuthDto) {
     const loginTicket = await this.oauthClient.verifyIdToken({
-      idToken: googleTokenDto.accessToken,
+      idToken: googleTokenDto.token,
     });
 
-    const { email, sub: googleId } = loginTicket.getPayload();
+    const {
+      email,
+      sub: googleId,
+      given_name: firstName,
+      family_name: lastName,
+    } = loginTicket.getPayload();
 
     const user = await this.usersService.findOneUserByGoogleId(googleId);
 
     if (user) {
-      const accessToken = await this.jwtProvider.generateAccessToken(user);
+      try {
+        const accessToken = await this.jwtProvider.generateAccessToken(user);
+        //   const refreshToken = await this.jwtProvider.generateRefreshToken();
+        return {
+          accessToken,
+        };
+      } catch (errror) {
+        throw errror;
+      }
+    }
+
+    try {
+      const newUser = await this.usersService.createUser({
+        email,
+        firstName,
+        lastName,
+        googleId,
+      });
+
+      const accessToken = await this.jwtProvider.generateAccessToken(newUser);
       //   const refreshToken = await this.jwtProvider.generateRefreshToken();
       return {
         accessToken,
       };
+    } catch (error) {
+      throw error;
     }
   }
 }

@@ -11,5 +11,5 @@ export class GoogleAuthDto {
   })
   @IsNotEmpty()
   @IsString()
-  accessToken: string;
+  token: string;
 }

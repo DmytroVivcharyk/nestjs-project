@@ -48,10 +48,6 @@ export class CreateUserDto {
       'Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character',
   })
   password?: string;
-
-  sayHello() {
-    console.log(`hello my name is ${this.firstName}`);
-  }
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}
