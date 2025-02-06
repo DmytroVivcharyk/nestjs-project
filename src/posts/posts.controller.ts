@@ -24,6 +24,7 @@ import { CreatePostDto } from './dtos/create-post.dto';
 import { PatchPostDto } from './dtos/patch-post.dto';
 import { GetPostsDto } from './dtos/get-posts-dto';
 // import { AccessTokenGuard } from 'src/auth/guards/access-token.guard';
+import { AuthentificatedUser } from 'src/auth/decorators/authentificated-user.decorator';
 
 @Controller('posts')
 @ApiTags('Posts')
@@ -49,7 +50,9 @@ export class PostsController {
   public createPost(
     @Body(new ValidationPipe({ whitelist: false, transform: true }))
     createPostDto: CreatePostDto,
+    @AuthentificatedUser(['email']) partialUser,
   ) {
+    console.log(partialUser);
     return this.postsService.createPost(createPostDto);
   }
 

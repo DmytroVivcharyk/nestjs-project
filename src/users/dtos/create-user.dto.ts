@@ -10,15 +10,15 @@ import {
 import { Type } from 'class-transformer';
 import { PartialType } from '@nestjs/mapped-types';
 
-interface ICreateUserDto {
-  firstName: string;
-  lastName?: string;
-  email: string;
-  password: string;
-  sayHello: () => void;
-}
+// interface ICreateUserDto {
+//   firstName: string;
+//   lastName?: string;
+//   email: string;
+//   password: string;
+//   sayHello: () => void;
+// }
 
-export class CreateUserDto implements ICreateUserDto {
+export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
@@ -36,14 +36,18 @@ export class CreateUserDto implements ICreateUserDto {
   @IsNotEmpty()
   email: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
+  googleId?: string;
+
+  @IsOptional()
+  @IsString()
   @MinLength(8)
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, {
     message:
       'Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character',
   })
-  password: string;
+  password?: string;
 
   sayHello() {
     console.log(`hello my name is ${this.firstName}`);

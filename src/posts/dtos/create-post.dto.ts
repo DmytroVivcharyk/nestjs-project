@@ -9,7 +9,7 @@ import {
   IsArray,
   Matches,
   IsUrl,
-  IsISO8601,
+  // IsISO8601,
   ValidateNested,
   IsInt,
 } from 'class-validator';
@@ -98,7 +98,7 @@ export class CreatePostDto {
     example: '2020-01-01T00:00:00.000Z',
   })
   @IsOptional()
-  @IsISO8601()
+  // @IsISO8601()
   publishedAt?: Date;
 
   @ApiPropertyOptional({

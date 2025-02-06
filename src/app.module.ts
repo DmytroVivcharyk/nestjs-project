@@ -12,6 +12,7 @@ import { MetaOptionsModule } from './meta-options/meta-options.module';
 import jwtConfig from 'src/config/jwt.config';
 import { AuthentificationGuard } from './auth/guards/authentification.guard';
 import { AccessTokenGuard } from 'src/auth/guards/access-token.guard';
+import GoogleConfig from 'src/config/google.config';
 
 const ENV = process.env.NODE_ENV;
 
@@ -43,7 +44,7 @@ const ConfiguredTypeOrmModule = TypeOrmModule.forRootAsync({
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
-      load: [jwtConfig],
+      load: [jwtConfig, GoogleConfig],
       validationSchema: null,
     }),
     MetaOptionsModule,

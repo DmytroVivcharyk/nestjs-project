@@ -13,6 +13,7 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
 import { HashingProvider } from 'src/auth/providers/hashing.provider';
+
 /**
  * UsersService to connect to Users table and perform buisned logic
  * Inject AuthService to be able to use Authservice
@@ -74,6 +75,16 @@ export class UsersService {
         cause: error,
       });
     }
+  }
+
+  public async findOneUserByGoogleId(googleId: string) {
+    const user = await this.userRepository.findOneBy({
+      googleId,
+    });
+    if (!user) {
+      throw new BadRequestException('The User id does not exist');
+    }
+    return user;
   }
 
   public async findUserByEmail(email: string) {

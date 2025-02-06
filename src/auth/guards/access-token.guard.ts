@@ -22,11 +22,13 @@ export class AccessTokenGuard implements CanActivate {
       throw new UnauthorizedException('Access token is invalid format');
     }
 
-    const isValidToken = await this.jwtProvider.verifyAccessToken(
+    const payload = await this.jwtProvider.verifyAccessToken(
       accessToken.replace('Bearrer ', ''),
     );
 
-    if (!isValidToken) {
+    request['user'] = payload;
+
+    if (!payload) {
       throw new UnauthorizedException('Access token is invalid');
     }
 

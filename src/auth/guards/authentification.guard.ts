@@ -8,6 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { AuthentificationTypeEnum } from '../enums/authentification-type.enum';
 import { AccessTokenGuard } from './access-token.guard';
 import { AUTH_TYPE_KEY } from '../constants/auth.constants';
+
 @Injectable()
 export class AuthentificationGuard implements CanActivate {
   private static readonly defaultAuthType: AuthentificationTypeEnum =

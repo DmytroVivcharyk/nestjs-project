@@ -8,6 +8,7 @@ import { BcryptProvider } from './providers/bcrypt.provider';
 import { JwtProvider } from './providers/jwt.provider';
 import { ConfigModule } from '@nestjs/config';
 import jwtConfig from 'src/config/jwt.config';
+import googleConfig from 'src/config/google.config';
 
 @Module({
   controllers: [AuthController],
@@ -18,7 +19,7 @@ import jwtConfig from 'src/config/jwt.config';
   ],
   imports: [
     forwardRef(() => UsersModule),
-    ConfigModule.forFeature(() => jwtConfig),
+    ConfigModule.forFeature(() => [jwtConfig, googleConfig]),
     JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   exports: [AuthService, HashingProvider, JwtProvider],
