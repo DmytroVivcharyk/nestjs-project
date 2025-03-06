@@ -26,6 +26,8 @@ import {
 import { UsersService } from './providers/users.service';
 import { CreateUserDto, UpdateUserDto } from './dtos/create-user.dto';
 import { CreateManyUsersDto } from './dtos/create-many-users.dto';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { AuthentificationTypeEnum } from 'src/auth/enums/authentification-type.enum';
 
 @Controller('users')
 @ApiTags('Users')
@@ -115,6 +117,7 @@ export class UsersController {
   }
 
   @Post(':id')
+  @Auth(AuthentificationTypeEnum.None)
   public addUserWithBody(
     @Body(
       new ValidationPipe({
@@ -125,7 +128,6 @@ export class UsersController {
     )
     newUser: CreateUserDto,
   ) {
-    newUser.sayHello();
     return this.UsersService.createUser(newUser);
   }
 
