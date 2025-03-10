@@ -13,6 +13,7 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { UsersCreateManyProvider } from './users-create-many.provider';
 import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
 import { HashingProvider } from 'src/auth/providers/hashing.provider';
+import { MailService } from 'src/mail/providers/mail.service';
 
 /**
  * UsersService to connect to Users table and perform buisned logic
@@ -45,6 +46,11 @@ export class UsersService {
      * Inject UsersCreateManyProvider
      */
     private readonly usersCreateManyProvider: UsersCreateManyProvider,
+
+    /**
+     * Inject MailService
+     */
+    private readonly mailService: MailService,
   ) {}
 
   /**
@@ -140,6 +146,13 @@ export class UsersService {
         cause: error,
       });
     }
+
+    try {
+      await this.mailService.sendUserWelcome(newUser);
+    } catch (error) {
+      throw new RequestTimeoutException(error);
+    }
+
     return newUser;
   }
 

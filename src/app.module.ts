@@ -12,6 +12,7 @@ import { MetaOptionsModule } from './meta-options/meta-options.module';
 import jwtConfig from 'src/config/jwt.config';
 import { AuthentificationGuard } from './auth/guards/authentification.guard';
 import { AccessTokenGuard } from 'src/auth/guards/access-token.guard';
+import { MailModule } from './mail/mail.module';
 import GoogleConfig from 'src/config/google.config';
 
 const ENV = process.env.NODE_ENV;
@@ -48,6 +49,7 @@ const ConfiguredTypeOrmModule = TypeOrmModule.forRootAsync({
       validationSchema: null,
     }),
     MetaOptionsModule,
+    MailModule,
   ],
   providers: [
     {
